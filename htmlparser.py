@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 
 import tidylib, xml.dom.minidom
 import domextensions
