@@ -1,3 +1,4 @@
+# vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 from xml.dom.minidom import Element, Node
 
 def getChildren(self):

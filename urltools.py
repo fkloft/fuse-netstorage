@@ -1,3 +1,4 @@
+# vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 import cookielib, gzip, StringIO, urlparse, urllib, urllib2, zlib
 import htmlparser
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab:expandtab
+# vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 
 import base64, os
 import debug, urltools, xpath

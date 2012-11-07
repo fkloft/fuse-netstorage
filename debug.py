@@ -1,3 +1,4 @@
+# vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 import os, time, traceback
 
 debugfile = file(os.path.join(os.path.dirname(__file__), "debug.log"), "w")
