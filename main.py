@@ -9,51 +9,6 @@ fuse.fuse_python_api = (0, 2)
 sys.stdout = sys.stderr = debug.debugfile
 sys.stdout.flush()
 
-class NetStorageStat(fuse.Stat):
-	def __init__(self, server, fh):
-		try:
-			if not "detail" in fh:
-				fh = server.getFileDetails(fh)
-			self.fh = fh
-			
-			if fh["folder"]:
-				self.st_mode = stat.S_IFDIR | 0755
-				self.st_nlink = 2
-				self.st_size = 4096
-			else:
-				self.st_mode = stat.S_IFREG | 0666
-				self.st_nlink = 1
-				if "size" in fh:
-					self.st_size = fh["size"]
-				else:
-					self.st_size = 0;
-			
-			self.st_ino = 0
-			self.st_dev = 0
-			self.st_uid = 0
-			self.st_gid = 0
-			self.st_rdev = 0
-			self.st_blksize = 0
-			self.st_blocks = 24
-			self.st_atime = time.time()
-			self.st_mtime = self._get_time("mtime")
-			self.st_ctime = self._get_time("ctime")
-		except Exception, e:
-			debug.debug(traceback.format_exc())
-			raise e
-	
-	def _get_time(self, t):
-		for i in (t, "mtime", "ctime", "atime"):
-			if i in self.fh:
-				return self.fh[i]
-		return time.time()
-	
-	def __getattr__(self, name):
-		raise AttributeError
-	
-	def __hasattr__(self, name):
-		return False
-
 class NetStorageFS(fuse.Fuse):
 	def __init__(self, server, root, username, password, *args, **kw):
 		self.server = netstorage.NetStorage(server, root, username, password)
@@ -123,6 +78,51 @@ class NetStorageFolder:
 	def __init__(self, *args):
 		pass
 		#de FIXME bug.debug("NetStorageFolder",args)
+	
+	def __getattr__(self, name):
+		raise AttributeError
+	
+	def __hasattr__(self, name):
+		return False
+
+class NetStorageStat(fuse.Stat):
+	def __init__(self, server, fh):
+		try:
+			if not "detail" in fh:
+				fh = server.getFileDetails(fh)
+			self.fh = fh
+			
+			if fh["folder"]:
+				self.st_mode = stat.S_IFDIR | 0755
+				self.st_nlink = 2
+				self.st_size = 4096
+			else:
+				self.st_mode = stat.S_IFREG | 0666
+				self.st_nlink = 1
+				if "size" in fh:
+					self.st_size = fh["size"]
+				else:
+					self.st_size = 0;
+			
+			self.st_ino = 0
+			self.st_dev = 0
+			self.st_uid = 0
+			self.st_gid = 0
+			self.st_rdev = 0
+			self.st_blksize = 0
+			self.st_blocks = 24
+			self.st_atime = time.time()
+			self.st_mtime = self._get_time("mtime")
+			self.st_ctime = self._get_time("ctime")
+		except Exception, e:
+			debug.debug(traceback.format_exc())
+			raise e
+	
+	def _get_time(self, t):
+		for i in (t, "mtime", "ctime", "atime"):
+			if i in self.fh:
+				return self.fh[i]
+		return time.time()
 	
 	def __getattr__(self, name):
 		raise AttributeError
