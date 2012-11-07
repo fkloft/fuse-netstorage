@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import config, errno, fuse, stat, time, traceback, sys
+import fuse, os, stat, time, traceback, sys
 
-import netstorage, debug
+import config, debug, netstorage
 
 fuse.fuse_python_api = (0, 2)
 
-sys.stdout = sys.stderr = file(os.path.join(os.path.dirname(__file__), "debug.log", "w"))
+sys.stdout = sys.stderr = file(os.path.join(os.path.dirname(__file__), "debug.log"), "w")
 sys.stdout.write("\n\n\n")
 sys.stdout.flush()
 

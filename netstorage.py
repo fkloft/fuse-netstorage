@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import base64, os
 import debug, urltools, xpath
 
 class NetStorage(object):
@@ -66,7 +67,7 @@ class NetStorage(object):
 			c = row.children
 			script = c[1].lastElementChild.childNodes[1].nodeValue
 			
-			filename = c[1].firstElementChild.["title"]
+			filename = c[1].firstElementChild["title"]
 			timestring = c[3].firstElementChild.childNodes[1].nodeValue.split('"')[1]
 			mtime = time.strptime(timestring, "%b %d %Y %H:%M %Z")
 			folder = "el.isFolder = true" in script
@@ -93,7 +94,7 @@ class NetStorage(object):
 		
 		try:
 			response = urltools.Request(
-				"/NetStorage/servlet/FileProps"
+				"/NetStorage/servlet/FileProps",
 				base=self.server,
 				data=post,
 				headers={"Authorization": self.authentication}
