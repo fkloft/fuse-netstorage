@@ -6,7 +6,7 @@ import netstorage, debug
 
 fuse.fuse_python_api = (0, 2)
 
-sys.stdout = sys.stderr = file("/home/felix/Desktop/fuse/debug.log","w")
+sys.stdout = sys.stderr = file(os.path.join(os.path.dirname(__file__), "debug.log", "w"))
 sys.stdout.write("\n\n\n")
 sys.stdout.flush()
 
