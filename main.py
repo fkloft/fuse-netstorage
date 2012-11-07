@@ -12,7 +12,14 @@ class NetStorageFS(fuse.Fuse):
 		
 		fuse.Fuse.__init__(self, *args, **kw)
 		
-		self.dir_class = NetStorageFolder
+		self.dir_class  = NetStorageFolder
+		self.file_class = NetStorageFile
+		
+		self.dir = os.path.dirname(__file__)
+		self.tmp_dir = os.path.join(self.dir, "tmp")
+		if not os.path.exists(self.tmp_dir):
+			os.mkdir(self.tmp_dir)
+		
 	
 	def getattr(self, path):
 		debug.debug("getattr(",path,")")
@@ -37,7 +44,16 @@ class NetStorageFS(fuse.Fuse):
 				
 				fh = fh[0]
 			
-			st = NetStorageStat(self.server, fh)
+			abspath = os.path.join(self.tmp_dir, path[1:])
+			debug.debug([self.tmp_dir, path, abspath])
+			
+			if not os.path.exists(abspath):
+				if fh["folder"]:
+					os.mkdir(abspath)
+				else:
+					os.utime(abspath, None)
+			
+			st = NetStorageStat(self.server, path, fh)
 			
 			return st
 		except:
@@ -63,29 +79,19 @@ class NetStorageFS(fuse.Fuse):
 			debug.debug_exception()
 			raise
 	
-	#def read(self, *args):
-	
 	def __getattr__(self, name):
-		raise AttributeError
-	
-	def __hasattr__(self, name):
-		return False
-
-class NetStorageFolder:
-	def __init__(self, *args):
-		debug.debug("NetStorageFolder",args)
-	
-	def __getattr__(self, name):
+		debug.debug("NetStorageFS: try to access attribute '%s'" % name)
 		raise AttributeError
 	
 	def __hasattr__(self, name):
 		return False
 
 class NetStorageStat(fuse.Stat):
-	def __init__(self, server, fh):
+	def __init__(self, server, path, fh):
 		try:
 			if not "detail" in fh:
 				fh = server.getFileDetails(fh)
+				debug.debug("NetStorageStat: getFileDetails returned:\n%s"%fh)
 			self.fh = fh
 			
 			if fh["folder"]:
@@ -121,10 +127,27 @@ class NetStorageStat(fuse.Stat):
 		return time.time()
 	
 	def __getattr__(self, name):
+		debug.debug("NetStorageStat: try to access attribute '%s'" % name)
 		raise AttributeError
 	
 	def __hasattr__(self, name):
 		return False
+
+class NetStorageFolder:
+	def __init__(self, *args):
+		debug.debug("NetStorageFolder(%s)" % ", ".join([str(i) for i in args]))
+	
+	def __getattr__(self, name):
+		debug.debug("NetStorageFolder: try to access attribute '%s'" % name)
+		raise AttributeError
+
+class NetStorageFile:
+	def __init__(self, *args):
+		debug.debug("NetStorageFile(%s)" % ", ".join([str(i) for i in args]))
+	
+	def __getattr__(self, name):
+		debug.debug("NetStorageFile: try to access attribute '%s'" % name)
+		raise AttributeError
 
 def main():
 	server = NetStorageFS(config.servername, config.root, config.username, config.password)
