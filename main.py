@@ -8,7 +8,6 @@ import config, debug, netstorage
 fuse.fuse_python_api = (0, 2)
 
 sys.stdout = sys.stderr = debug.debugfile
-sys.stdout.write("\n\n\n")
 sys.stdout.flush()
 
 class NetStorageStat(fuse.Stat):
