@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import tidylib, xml.dom.minidom
+import domextensions
 
 def html2dom(response):
 	text = response.read()
@@ -18,6 +19,5 @@ def html2dom(response):
 		"merge-divs": "no",
 		"merge-spans": "no"
 	})
-	#open("/home/felix/Desktop/fuse/debug.htm","w").write(html) # FIXME
 	return xml.dom.minidom.parseString(html)
 

@@ -1,15 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import base64, cookielib, json, os, re, time, traceback, urllib, urlparse, urllib2
-import domextensions, xpath
-import html2dom, debug
-
-cj = cookielib.LWPCookieJar()
-opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-urllib2.install_opener(opener)
-
-userAgent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
+import debug, urltools, xpath
 
 class NetStorage(object):
 	def __init__(self, server, root, username, password):
@@ -17,18 +9,20 @@ class NetStorage(object):
 		self.root = root
 		self.username = username
 		self.password = password
+		self.authentication = "Basic %s" % base64.encodestring('%s:%s' % (self.username, self.password))[:-1]
 		
-		response = None
-		
-		req = urllib2.Request(urlparse.urljoin(self.server, self.root), headers={'User-Agent':userAgent})
 		try:
-			response = urllib2.urlopen(req)
+			response = urltools.Request(self.root, base=self.server, expect=urltools.HTML)
 		except urllib2.HTTPError, e:
 			if hasattr(e, "code") and e.code == 401:
 				base64string = base64.encodestring('%s:%s' % (self.username, self.password))[:-1]
-				req.add_header("Authorization", "Basic %s" % base64string)
 				try:
-					response = urllib2.urlopen(req)
+					response = urltools.Request(
+						self.root,
+						base=self.server,
+						expect=urltools.HTML,
+						headers={"Authorization": "Basic %s" % base64string}
+					)
 				except:
 					debug.debug(traceback.format_exc())
 			else:
@@ -38,25 +32,24 @@ class NetStorage(object):
 		
 	
 	def getSession(self):
-		for cookie in cj:
+		for cookie in urltools.cj:
 			if cookie.name.lower() == "novellsession1":
 				return cookie.value
 		return None
 	
-	
 	def getFolderIndex(self, path):
-		path = urlparse.urljoin(self.server, os.path.join(self.root, path))
-		
-		req = urllib2.Request(path, headers={'User-Agent':userAgent})
-		
-		base64string = base64.encodestring('%s:%s' % (self.username, self.password))[:-1]
-		req.add_header("Authorization", "Basic %s" % base64string)
 		try:
-			response = urllib2.urlopen(req)
+			response = urltools.Request(
+				os.path.join(self.root, path),
+				base=self.server,
+				headers={"Authorization": self.authentication},
+				expect=urltools.HTML
+			)
 		except Exception,e:
 			debug.debug(traceback.format_exc())
 			raise e
-		dom = html2dom.html2dom(response)
+		
+		dom = response.get_dom()
 		
 		script = dom.getElementsByTagName("body")[0].firstElementChild.childNodes[1].nodeValue
 		string = script.split("devicePath=",1)[1].split("\n",1)[0].strip()
@@ -73,7 +66,7 @@ class NetStorage(object):
 			c = row.children
 			script = c[1].lastElementChild.childNodes[1].nodeValue
 			
-			filename = c[1].firstElementChild.getAttribute("title")
+			filename = c[1].firstElementChild.["title"]
 			timestring = c[3].firstElementChild.childNodes[1].nodeValue.split('"')[1]
 			mtime = time.strptime(timestring, "%b %d %Y %H:%M %Z")
 			folder = "el.isFolder = true" in script
@@ -98,20 +91,18 @@ class NetStorage(object):
 			"session": self.getSession()
 		}
 		
-		url = urlparse.urljoin(self.server, "/NetStorage/servlet/FileProps")
-		post = urllib.urlencode(post)
-		req = urllib2.Request(url, post, headers={'User-Agent':userAgent})
-		
-		base64string = base64.encodestring('%s:%s' % (self.username, self.password))[:-1]
-		req.add_header("Authorization", "Basic %s" % base64string)
-		
 		try:
-			response = urllib2.urlopen(req)
+			response = urltools.Request(
+				"/NetStorage/servlet/FileProps"
+				base=self.server,
+				data=post,
+				headers={"Authorization": self.authentication}
+			)
 		except Exception,e:
 			debug.debug(traceback.format_exc())
 			raise e
 		
-		dom = html2dom.html2dom(response)
+		dom = response.get_dom()
 		try:
 			table = xpath.find('//div[@id="NFSRights"]/table', dom)[0]
 		except IndexError:

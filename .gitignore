@@ -29,6 +29,7 @@ pip-log.txt
 #Backups
 *~
 
-#Persönliche Daten
+#Sonstiges
 config.py
+debug.log
 
