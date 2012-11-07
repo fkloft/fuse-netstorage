@@ -1,6 +1,6 @@
 import os, time, traceback
 
-debugfile = file(os.path.join(os.path.dirname(__file__), "debug.log"), "a")
+debugfile = file(os.path.join(os.path.dirname(__file__), "debug.log"), "w")
 
 def debug(*args):
 	data = " ".join([str(i) for i in args])
