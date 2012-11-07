@@ -51,11 +51,14 @@ class Request:
 		self.response = urllib2.urlopen(self.request)
 		
 		if self.response.info().get('Content-Encoding') == 'gzip':
-			self.file = gzip.GzipFile(fileobj=StringIO.StringIO(self.response.read()))
+			try:
+				self.file = StringIO.StringIO(gzip.decompress(self.response.read()))
+			except NameError:
+				self.file = StringIO.StringIO(gzip.GzipFile(StringIO.StringIO(self.response.read())).read())
 		elif self.response.info().get('Content-Encoding') == 'deflate':
 			self.file = StringIO.StringIO(zlib.decompress(self.response.read()))
 		else:
-			self.file = self.response
+			self.file = StringIO.StringIO(self.response.read())
 	
 	def read(self, length=None):
 		return self.file.read(length)

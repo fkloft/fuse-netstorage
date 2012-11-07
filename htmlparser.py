@@ -4,9 +4,7 @@
 import tidylib, xml.dom.minidom
 import domextensions
 
-def parse(response):
-	text = response.read()
-	
+def parse(text):
 	html, errors = tidylib.tidy_document(text, options=\
 	{
 		"output-xml": 1,
