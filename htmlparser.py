@@ -3,7 +3,7 @@
 import tidylib, xml.dom.minidom
 import domextensions
 
-def html2dom(response):
+def parse(response):
 	text = response.read()
 	
 	html, errors = tidylib.tidy_document(text, options=\
