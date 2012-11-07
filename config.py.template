@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#servername = "https://fw-bbst-jws.pop-koblenz.rz-online.net:8443"
+#servername = "https://82.115.104.234:8443"
+servername = "https://bbst-netstorage.bildung.koblenz.de"
+#servername = "https://10.3.0.11"
+
+#root = "/oneNet/NetStorage"
+root = "/NetStorage"
+
+username = ""
+password = ""
+

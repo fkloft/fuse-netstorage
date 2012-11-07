@@ -1,0 +1,55 @@
+
+==================================================
+23:28:06: getattr@main.py: 66:
+getattr( / )
+None
+==================================================
+23:28:07: getFolderIndex@/home/felix/Desktop/fuse/netstorage.py: 57:
+Traceback (most recent call last):
+  File "/home/felix/Desktop/fuse/netstorage.py", line 55, in getFolderIndex
+    response = urllib2.urlopen(req)
+  File "/usr/lib/python2.7/urllib2.py", line 126, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 397, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 510, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 435, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 369, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 518, in http_error_default
+    raise HTTPError(req.get_full_url(), code, msg, hdrs, fp)
+HTTPError: HTTP Error 404: Not Found
+
+Traceback (most recent call last):
+  File "/home/felix/Desktop/fuse/netstorage.py", line 55, in getFolderIndex
+    response = urllib2.urlopen(req)
+  File "/usr/lib/python2.7/urllib2.py", line 126, in urlopen
+    return _opener.open(url, data, timeout)
+  File "/usr/lib/python2.7/urllib2.py", line 397, in open
+    response = meth(req, response)
+  File "/usr/lib/python2.7/urllib2.py", line 510, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python2.7/urllib2.py", line 435, in error
+    return self._call_chain(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 369, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python2.7/urllib2.py", line 518, in http_error_default
+    raise HTTPError(req.get_full_url(), code, msg, hdrs, fp)
+HTTPError: HTTP Error 404: Not Found
+==================================================
+23:28:07: readdir@main.py:110:
+Traceback (most recent call last):
+  File "main.py", line 105, in readdir
+    dirents.extend([i["filename"] for i in self.server.getFolderIndex(path)])
+  File "/home/felix/Desktop/fuse/netstorage.py", line 58, in getFolderIndex
+    raise e
+HTTPError: HTTP Error 404: Not Found
+
+Traceback (most recent call last):
+  File "main.py", line 105, in readdir
+    dirents.extend([i["filename"] for i in self.server.getFolderIndex(path)])
+  File "/home/felix/Desktop/fuse/netstorage.py", line 58, in getFolderIndex
+    raise e
+HTTPError: HTTP Error 404: Not Found
