@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 
-import base64, json, os, time, traceback, urllib, urllib2
+import base64, json, os, time, urllib, urllib2
 import debug, urltools, xpath
 
 class NetStorage(object):
@@ -26,11 +26,14 @@ class NetStorage(object):
 						headers={"Authorization": "Basic %s" % base64string}
 					)
 				except:
-					debug.debug(traceback.format_exc())
+					debug.debug_exception()
+					raise
 			else:
-				raise e
+				debug.debug_exception()
+				raise
 		except:
-			debug.debug(traceback.format_exc())
+			debug.debug_exception()
+			raise
 		
 	
 	def getSession(self):
@@ -47,9 +50,9 @@ class NetStorage(object):
 				headers={"Authorization": self.authentication},
 				expect=urltools.HTML
 			)
-		except Exception,e:
-			debug.debug(traceback.format_exc())
-			raise e
+		except:
+			debug.debug_exception()
+			raise
 		
 		dom = response.get_dom()
 		
@@ -100,9 +103,9 @@ class NetStorage(object):
 				data=post,
 				headers={"Authorization": self.authentication}
 			)
-		except Exception,e:
-			debug.debug(traceback.format_exc())
-			raise e
+		except:
+			debug.debug_exception()
+			raise
 		
 		dom = response.get_dom()
 		try:
@@ -119,7 +122,7 @@ class NetStorage(object):
 			timestring = urllib.unquote(json.loads(string))
 			data["ctime"] = time.strptime(timestring, "%Y-%m-%dT%H:%M:%SZ")
 		except:
-			debug.debug(traceback.format_exc())
+			debug.debug_exception()
 		
 		try:
 			script = c[3].children[1].firstElementChild.childNodes[1].nodeValue
@@ -127,7 +130,7 @@ class NetStorage(object):
 			timestring = urllib.unquote(json.loads(string))
 			data["mtime"] = time.strptime(timestring, "%a, %d %b %Y %H:%M:%S %Z")
 		except:
-			debug.debug(traceback.format_exc())
+			debug.debug_exception()
 		
 		data["detail"] = True
 		

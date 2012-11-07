@@ -32,4 +32,4 @@ pip-log.txt
 #Sonstiges
 config.py
 debug.log
-
+debug.pipe

@@ -7,5 +7,6 @@ Hinweise
 ========
 
 - Verzeichnis `mount` anlegen
+- Debugging-Server in zweiter Shell starten (debug-server.py)
 - Aufruf: `fusermount -u mount/ 2>/dev/null;python main.py mount/` (o.ä.)
-- Debugging: siehe `debug.log`
+

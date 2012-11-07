@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # vi:fenc=utf-8:tabstop=2:shiftwidth=2:smartindent:smarttab
 
-import errno, fuse, os, stat, time, traceback, sys
+import errno, fuse, os, stat, time
 import config, debug, netstorage
 
 fuse.fuse_python_api = (0, 2)
-
-sys.stdout = sys.stderr = debug.debugfile
-sys.stdout.flush()
 
 class NetStorageFS(fuse.Fuse):
 	def __init__(self, server, root, username, password, *args, **kw):
@@ -43,10 +40,10 @@ class NetStorageFS(fuse.Fuse):
 			st = NetStorageStat(self.server, fh)
 			
 			return st
-		except Exception, e:
-			debug.debug(traceback.format_exc())
-			raise e
-
+		except:
+			debug.debug_exception()
+			raise
+	
 	def readdir(self, path, offset):
 		try:
 			if path[0] == "/":
@@ -62,9 +59,9 @@ class NetStorageFS(fuse.Fuse):
 			
 			for r in dirents:
 				yield fuse.Direntry(str(r))
-		except Exception, e:
-			debug.debug(traceback.format_exc())
-			raise e
+		except:
+			debug.debug_exception()
+			raise
 	
 	#def read(self, *args):
 	
@@ -76,8 +73,7 @@ class NetStorageFS(fuse.Fuse):
 
 class NetStorageFolder:
 	def __init__(self, *args):
-		pass
-		#de FIXME bug.debug("NetStorageFolder",args)
+		debug.debug("NetStorageFolder",args)
 	
 	def __getattr__(self, name):
 		raise AttributeError
@@ -114,9 +110,9 @@ class NetStorageStat(fuse.Stat):
 			self.st_atime = time.time()
 			self.st_mtime = self._get_time("mtime")
 			self.st_ctime = self._get_time("ctime")
-		except Exception, e:
-			debug.debug(traceback.format_exc())
-			raise e
+		except:
+			debug.debug_exception()
+			raise
 	
 	def _get_time(self, t):
 		for i in (t, "mtime", "ctime", "atime"):
@@ -137,9 +133,9 @@ def main():
 	try:
 		server.parse(errex=1)
 		server.main()
-	except Exception,e:
-		debug.debug(traceback.format_exc())
-		raise e
+	except:
+		debug.debug_exception()
+		raise
 
 if __name__ == '__main__':
 	main()
