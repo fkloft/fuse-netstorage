@@ -6,8 +6,8 @@
 servername = "https://bbst-netstorage.bildung.koblenz.de"
 #servername = "https://10.3.0.11"
 
-#root = "/oneNet/NetStorage"
-root = "/NetStorage"
+root = "/oneNet/NetStorage"
+#root = "/NetStorage"
 
 username = ""
 password = ""
